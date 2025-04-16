@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+    .header {
+      background: #007BFF;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header a {
+      color: #fff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div><strong>Financial Calculators</strong></div>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Tax Calculator</a>
+      <a href="#">NPS Calculator</a>
+      <a href="#">FD/RD Calculator</a>
+      <a href="#">PPF Calculator</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>PPF Calculator</h2>
+
+    <label>Yearly Investment (₹):</label>
+    <input type="number" id="ppfAmount" placeholder="e.g. 100000" />
+
+    <label>Interest Rate (% per annum):</label>
+    <input type="number" id="ppfRate" placeholder="e.g. 7.1" />
+
+    <label>Investment Duration (in years):</label>
+    <input type="number" id="ppfYears" placeholder="e.g. 15" />
+
+    <button onclick="calculatePPF()">Calculate</button>
+
+    <div class="result" id="ppfResult"></div>
+  </div>
+
+  <script>
+    function calculatePPF() {
+      const P = parseFloat(document.getElementById("ppfAmount").value);
+      const r = parseFloat(document.getElementById("ppfRate").value) / 100;
+      const n = parseInt(document.getElementById("ppfYears").value);
+
+      if (!P || !r || !n) {
+        document.getElementById("ppfResult").textContent = "Please enter all values.";
+        return;
+      }
+
+      let maturity = 0;
+      for (let i = 1; i <= n; i++) {
+        maturity = (maturity + P) * (1 + r);
+      }
+
+      document.getElementById("ppfResult").textContent = `Maturity Amount: ₹${maturity.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
