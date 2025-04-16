@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EMI Calculator - Money Myntra</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>EMI Calculator</h1>
+    <p>Estimate your monthly EMI and total repayment amount for your loan.</p>
+  </header>
+
+  <main class="container" style="grid-template-columns: 1fr;">
+    <div class="middle-panel">
+      <form id="emiForm">
+        <label>Loan Amount (₹):
+          <input type="number" id="loanAmount" required>
+        </label><br><br>
+
+        <label>Annual Interest Rate (%):
+          <input type="range" id="interestRate" min="0" max="100" value="12">
+          <input type="number" id="interestRateNumber" value="12">
+          <span id="interestRateValue">12%</span>
+        </label><br><br>
+
+        <label>Loan Tenure (Months):
+          <input type="range" id="tenureRange" min="12" max="360" value="120">
+          <input type="number" id="tenure" value="120" required>
+        </label><br><br>
+
+        <button type="submit" style="background:#2d4059;color:#fff;padding:0.5rem 1rem;border:none;border-radius:5px;">
+          Calculate
+        </button>
+      </form>
+
+      <div id="result" style="margin-top:1.5rem;font-size:1.1rem;"></div>
+      <canvas id="emiChart" width="400" height="200" style="margin-top:2rem;"></canvas>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Money Myntra. All rights reserved.
+  </footer>
+
+  <script>
+    const interestRateInput = document.getElementById('interestRate');
+    const interestRateNumber = document.getElementById('interestRateNumber');
+    const interestRateValue = document.getElementById('interestRateValue');
+    const tenureRange = document.getElementById('tenureRange');
+    const tenureInput = document.getElementById('tenure');
+    const ctx = document.getElementById('emiChart').getContext('2d');
+    let chart;
+
+    // Sync slider and input boxes
+    interestRateInput.addEventListener('input', () => {
+      interestRateNumber.value = interestRateInput.value;
+      interestRateValue.textContent = `${interestRateInput.value}%`;
+    });
+    interestRateNumber.addEventListener('input', () => {
+      interestRateInput.value = interestRateNumber.value;
+      interestRateValue.textContent = `${interestRateNumber.value}%`;
+    });
+
+    tenureRange.addEventListener('input', () => {
+      tenureInput.value = tenureRange.value;
+    });
+    tenureInput.addEventListener('input', () => {
+      tenureRange.value = tenureInput.value;
+    });
+
+    document.getElementById('emiForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      let loanAmount = parseFloat(document.getElementById('loanAmount').value);
+      const annualInterestRate = parseFloat(interestRateInput.value);
+      const tenure = parseFloat(document.getElementById('tenure').value);
+
+      // EMI Calculation Formula
+      const monthlyInterestRate = annualInterestRate / 100 / 12;
+      const emi = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, tenure)) / (Math.pow(1 + monthlyInterestRate, tenure) - 1);
+      const totalPayment = emi * tenure;
+      const totalInterest = totalPayment - loanAmount;
+
+      let loanData = [];
+      let emiData = [];
+
+      // Data for the loan balance and EMI payments over time
+      for (let i = 1; i <= tenure; i++) {
+        loanAmount -= emi - (loanAmount * monthlyInterestRate);  // Reduce principal with each payment
+        loanData.push(loanAmount);
+        emiData.push(emi);
+      }
+
+      document.getElementById('result').innerHTML = `
+        <strong>Monthly EMI:</strong> ₹${emi.toFixed(2)}<br>
+        <strong
