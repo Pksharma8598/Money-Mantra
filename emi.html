@@ -96,4 +96,53 @@
 
       document.getElementById('result').innerHTML = `
         <strong>Monthly EMI:</strong> ₹${emi.toFixed(2)}<br>
-        <strong
+        <strong>Total Payment:</strong> ₹${totalPayment.toFixed(2)}<br>
+        <strong>Total Interest:</strong> ₹${totalInterest.toFixed(2)}
+      `;
+
+      // Destroy any existing chart before rendering a new one
+      if (chart) chart.destroy();
+
+      // Create line graph
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Array.from({ length: tenure }, (_, i) => i + 1),
+          datasets: [
+            {
+              label: 'Loan Balance (₹)',
+              data: loanData,
+              borderColor: '#2d4059',
+              fill: false
+            },
+            {
+              label: 'EMI Payment (₹)',
+              data: emiData,
+              borderColor: '#ea5455',
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '₹' + value;
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
