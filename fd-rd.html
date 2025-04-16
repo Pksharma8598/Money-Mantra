@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+    .header {
+      background: #007BFF;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header a {
+      color: #fff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div><strong>Financial Calculators</strong></div>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Tax Calculator</a>
+      <a href="#">NPS Calculator</a>
+      <a href="#">FD/RD Calculator</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>FD / RD Calculator</h2>
+
+    <label for="type">Investment Type:</label>
+    <select id="type">
+      <option value="fd">Fixed Deposit (FD)</option>
+      <option value="rd">Recurring Deposit (RD)</option>
+    </select>
+
+    <label>Monthly Investment / Deposit Amount (₹):</label>
+    <input type="number" id="amount" placeholder="e.g. 10000" />
+
+    <label>Annual Interest Rate (%):</label>
+    <input type="number" id="rate" placeholder="e.g. 6.5" />
+
+    <label>Tenure (in months):</label>
+    <input type="number" id="tenure" placeholder="e.g. 60" />
+
+    <button onclick="calculateFD_RD()">Calculate</button>
+
+    <div class="result" id="fdRdResult"></div>
+  </div>
+
+  <script>
+    function calculateFD_RD() {
+      const type = document.getElementById("type").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const rate = parseFloat(document.getElementById("rate").value);
+      const months = parseInt(document.getElementById("tenure").value);
+
+      if (!amount || !rate || !months) {
+        document.getElementById("fdRdResult").textContent = "Please enter all values.";
+        return;
+      }
+
+      let maturity = 0;
+      const r = rate / 400; // Quarterly compounding
+
+      if (type === "fd") {
+        // FD calculation: A = P(1 + r/n)^(nt), where n = 4
+        const t = months / 12;
+        maturity = amount * Math.pow(1 + r, 4 * t);
+      } else {
+        // RD calculation: M = P × (1 + r)^n × ((1 + r)^n - 1)/r
+        const n = months;
+        const rd_r = rate / 1200; // Monthly interest
+        maturity = amount * n + amount * ((Math.pow(1 + rd_r, n) - 1) / rd_r);
+      }
+
+      document.getElementById("fdRdResult").textContent = `Maturity Amount: ₹${maturity.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
