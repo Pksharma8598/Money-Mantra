@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPS Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+    .header {
+      background: #007BFF;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html">Home</a>
+    <a href="tax-calculator.html">Tax Calculator</a>
+    <a href="nps-calculator.html">NPS Calculator</a>
+  </div>
+
+  <div class="container">
+    <h2>NPS Calculator</h2>
+
+    <label>Annual Basic Salary (₹):</label>
+    <input type="number" id="basicSalary" placeholder="e.g. 600000" />
+
+    <label>Employee Contribution (%):</label>
+    <input type="number" id="employeePercent" placeholder="e.g. 10" />
+
+    <label>Employer Contribution (%):</label>
+    <input type="number" id="employerPercent" placeholder="e.g. 10" />
+
+    <label>Number of Years Until Retirement:</label>
+    <input type="number" id="years" placeholder="e.g. 30" />
+
+    <label>Expected Annual Return Rate (%):</label>
+    <input type="number" id="returnRate" placeholder="e.g. 8" />
+
+    <button onclick="calculateNPS()">Calculate NPS Maturity</button>
+
+    <div class="result">
+      <p id="npsResult">Total NPS Corpus: ₹0</p>
+    </div>
+  </div>
+
+  <script>
+    function calculateNPS() {
+      const basicSalary = parseFloat(document.getElementById("basicSalary").value) || 0;
+      const employeePercent = parseFloat(document.getElementById("employeePercent").value) || 0;
+      const employerPercent = parseFloat(document.getElementById("employerPercent").value) || 0;
+      const years = parseInt(document.getElementById("years").value) || 0;
+      const returnRate = parseFloat(document.getElementById("returnRate").value) || 0;
+
+      const annualContribution = basicSalary * (employeePercent + employerPercent) / 100;
+      let corpus = 0;
+
+      for (let i = 0; i < years; i++) {
+        corpus = (corpus + annualContribution) * (1 + returnRate / 100);
+      }
+
+      document.getElementById("npsResult").textContent = `Total NPS Corpus: ₹${corpus.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
