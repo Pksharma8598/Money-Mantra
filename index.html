@@ -1,111 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Money Myntra - Personal Finance Tool</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Myntra - Personal Finance Tool</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-
 <body>
-    <header>
-        <div class="container">
-            <h1>Welcome to Money Myntra</h1>
-            <p>Your personalized finance tool to manage investments, savings, and more.</p>
-        </div>
-    </header>
+  <header>
+    <h1>Money Myntra</h1>
+    <p>Your Personal Finance Companion</p>
+  </header>
 
-    <main class="landing-page">
-        <div class="left-section">
-            <h2>Key Indices of India</h2>
-            <div class="indices">
-                <p><strong>SENSEX:</strong> <span id="sensex-value">Loading...</span></p>
-                <p><strong>NIFTY:</strong> <span id="nifty-value">Loading...</span></p>
-                <p><strong>Gold Price:</strong> ₹<span id="gold-price">Loading...</span> per 10g</p>
-                <p><strong>Crude Oil Price:</strong> $<span id="crude-price">Loading...</span> per barrel</p>
-            </div>
-        </div>
+  <main class="container">
+    <section class="left-panel">
+      <h2>India Market Indices</h2>
+      <div class="index">
+        <strong>NIFTY 50:</strong> <span id="nifty-value">Loading...</span>
+      </div>
+      <div class="index">
+        <strong>SENSEX:</strong> <span id="sensex-value">Loading...</span>
+      </div>
+    </section>
 
-        <div class="center-section">
-            <h2>Financial Calculators</h2>
-            <div class="calculator-links">
-                <a href="#sip-calculator">SIP Calculator</a>
-                <a href="#emi-calculator">EMI Calculator</a>
-                <a href="#tax-calculator">TAX Calculator</a>
-                <a href="#nps-calculator">NPS Calculator</a>
-                <a href="#hra-calculator">HRA Calculator</a>
-                <a href="#gratuity-calculator">Gratuity Calculator</a>
-                <a href="#ppf-calculator">PPF Calculator</a>
-                <a href="#fd-rd-calculator">FD/RD Calculator</a>
-                <a href="#fv-cv-calculator">Future Value / Current Value Calculator</a>
-            </div>
-        </div>
+    <section class="middle-panel">
+      <h2>Finance Calculators</h2>
+      <div class="calculator-links">
+        <a href="./calculators/sip.html">SIP Calculator</a>
+        <a href="./calculators/emi.html">EMI Calculator</a>
+        <a href="./calculators/tax.html">Tax Calculator</a>
+        <a href="./calculators/nps.html">NPS Calculator</a>
+        <a href="./calculators/hra.html">HRA Calculator</a>
+        <a href="./calculators/gratuity.html">Gratuity Calculator</a>
+        <a href="./calculators/ppf.html">PPF Calculator</a>
+        <a href="./calculators/fd-rd.html">FD/RD Calculator</a>
+        <a href="./calculators/future-current.html">Future/Current Value</a>
+      </div>
+    </section>
 
-        <div class="right-section">
-            <h2>Latest Finance News</h2>
-            <div id="news-container" class="news">
-                <p>Loading latest news...</p>
-            </div>
-        </div>
-    </main>
+    <section class="right-panel">
+      <h2>Financial News</h2>
+      <ul id="news-list">
+        <li>Loading news...</li>
+      </ul>
+    </section>
+  </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Money Myntra. All rights reserved.</p>
-        </div>
-    </footer>
+  <footer>
+    <p>&copy; 2025 Money Myntra. All rights reserved.</p>
+  </footer>
 
-    <script>
-        const apiKey = '6Y4WPBK0VWYPWDBX'; // Your API key from Alpha Vantage
+  <script>
+  async function fetchMarketData() {
+    try {
+      const url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=^NSEI,^BSESN';
+      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
 
-        // Function to fetch real-time data for stock indices (NIFTY, SENSEX) from Alpha Vantage
-        function fetchStockIndices() {
-            // Example: Fetching current SENSEX and NIFTY values
-            const sensexUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=NSE:SENSEX&interval=1min&apikey=${apiKey}`;
-            const niftyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=NSE:NIFTY&interval=1min&apikey=${apiKey}`;
+      const response = await fetch(proxyUrl);
+      const data = await response.json();
 
-            // Fetch SENSEX data
-            axios.get(sensexUrl)
-                .then(response => {
-                    if (response.data["Time Series (1min)"]) {
-                        const sensexData = response.data["Time Series (1min)"];
-                        const lastTimestamp = Object.keys(sensexData)[0];
-                        const sensexValue = sensexData[lastTimestamp]["4. close"];
-                        document.getElementById('sensex-value').textContent = sensexValue;
-                    } else {
-                        document.getElementById('sensex-value').textContent = 'Data not available';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching SENSEX data:', error);
-                    document.getElementById('sensex-value').textContent = 'Error fetching data';
-                });
+      const nifty = data.quoteResponse.result.find(item => item.symbol === '^NSEI');
+      const sensex = data.quoteResponse.result.find(item => item.symbol === '^BSESN');
 
-            // Fetch NIFTY data
-            axios.get(niftyUrl)
-                .then(response => {
-                    if (response.data["Time Series (1min)"]) {
-                        const niftyData = response.data["Time Series (1min)"];
-                        const lastTimestamp = Object.keys(niftyData)[0];
-                        const niftyValue = niftyData[lastTimestamp]["4. close"];
-                        document.getElementById('nifty-value').textContent = niftyValue;
-                    } else {
-                        document.getElementById('nifty-value').textContent = 'Data not available';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching NIFTY data:', error);
-                    document.getElementById('nifty-value').textContent = 'Error fetching data';
-                });
-        }
+      document.getElementById('nifty-value').textContent = nifty?.regularMarketPrice?.toFixed(2) ?? 'N/A';
+      document.getElementById('sensex-value').textContent = sensex?.regularMarketPrice?.toFixed(2) ?? 'N/A';
+    } catch (error) {
+      console.error('Market data fetch error:', error);
+      document.getElementById('nifty-value').textContent = 'Error fetching';
+      document.getElementById('sensex-value').textContent = 'Error fetching';
+    }
+  }
 
-        // Call the fetchStockIndices function when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchStockIndices();
-        });
-    </script>
+  async function fetchNews() {
+    try {
+      const rssUrl = 'https://news.google.com/rss/search?q=finance+india';
+      const rssToJsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+      const response = await axios.get(rssToJsonUrl);
+      const items = response.data.items.slice(0, 5); // Show top 5 news
+
+      const newsList = document.getElementById('news-list');
+      newsList.innerHTML = '';
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+        newsList.appendChild(li);
+      });
+    } catch (error) {
+      console.error('News fetch error:', error);
+      document.getElementById('news-list').innerHTML = '<li>Error loading news</li>';
+    }
+  }
+
+  fetchMarketData();
+  fetchNews();
+  setInterval(fetchMarketData, 60000); // Refresh every 1 minute
+</script>
 </body>
-
 </html>
