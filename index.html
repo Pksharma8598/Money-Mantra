@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Money Myntra - Personal Finance Tool</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 
 <body>
@@ -20,11 +21,10 @@
         <div class="left-section">
             <h2>Key Indices of India</h2>
             <div class="indices">
-                <p><strong>SENSEX:</strong> 59,000.00</p>
-                <p><strong>NIFTY:</strong> 17,500.00</p>
-                <p><strong>Gold Price:</strong> ₹55,000 per 10g</p>
-                <p><strong>Crude Oil Price:</strong> $70 per barrel</p>
-                <!-- Add more indices here -->
+                <p><strong>SENSEX:</strong> <span id="sensex-value">Loading...</span></p>
+                <p><strong>NIFTY:</strong> <span id="nifty-value">Loading...</span></p>
+                <p><strong>Gold Price:</strong> ₹<span id="gold-price">Loading...</span> per 10g</p>
+                <p><strong>Crude Oil Price:</strong> $<span id="crude-price">Loading...</span> per barrel</p>
             </div>
         </div>
 
@@ -45,12 +45,8 @@
 
         <div class="right-section">
             <h2>Latest Finance News</h2>
-            <div class="news">
-                <p><strong><a href="https://www.moneycontrol.com/" target="_blank">Moneycontrol: Market Update</a></strong></p>
-                <p><strong><a href="https://www.economictimes.indiatimes.com/industry/" target="_blank">Economic Times: Finance News</a></strong></p>
-                <p><strong><a href="https://www.business-standard.com/category/finance-news-1080101.htm" target="_blank">Business Standard: Finance</a></strong></p>
-                <p><strong><a href="https://www.financialexpress.com/market/" target="_blank">Financial Express: Markets</a></strong></p>
-                <!-- Add more news sources here -->
+            <div id="news-container" class="news">
+                <p>Loading latest news...</p>
             </div>
         </div>
     </main>
@@ -60,6 +56,46 @@
             <p>&copy; 2025 Money Myntra. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        const apiKey = '6Y4WPBK0VWYPWDBX'; // Your API key from Alpha Vantage
+
+        // Function to fetch real-time data for stock indices (NIFTY, SENSEX) from Alpha Vantage
+        function fetchStockIndices() {
+            // Example: Fetching current SENSEX and NIFTY values
+            const sensexUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=NSE:SENSEX&interval=1min&apikey=${apiKey}`;
+            const niftyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=NSE:NIFTY&interval=1min&apikey=${apiKey}`;
+
+            // Fetch SENSEX data
+            axios.get(sensexUrl)
+                .then(response => {
+                    const sensexData = response.data["Time Series (1min)"];
+                    const lastTimestamp = Object.keys(sensexData)[0];
+                    const sensexValue = sensexData[lastTimestamp]["4. close"];
+                    document.getElementById('sensex-value').textContent = sensexValue;
+                })
+                .catch(error => {
+                    console.error('Error fetching SENSEX data:', error);
+                    document.getElementById('sensex-value').textContent = 'Error';
+                });
+
+            // Fetch NIFTY data
+            axios.get(niftyUrl)
+                .then(response => {
+                    const niftyData = response.data["Time Series (1min)"];
+                    const lastTimestamp = Object.keys(niftyData)[0];
+                    const niftyValue = niftyData[lastTimestamp]["4. close"];
+                    document.getElementById('nifty-value').textContent = niftyValue;
+                })
+                .catch(error => {
+                    console.error('Error fetching NIFTY data:', error);
+                    document.getElementById('nifty-value').textContent = 'Error';
+                });
+        }
+
+        // Call the fetchStockIndices function when the page loads
+        fetchStockIndices();
+    </script>
 </body>
 
 </html>
