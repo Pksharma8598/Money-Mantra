@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Income Tax Calculator (India - FY 2025-26)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; background-color: #f4f4f4; }
+    h2 { color: #333; }
+    .container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 10px; }
+    input, select { padding: 8px; width: 100%; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    .result { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Income Tax Calculator - FY 2025-26</h2>
+    <label for="grossSalary">Annual Gross Salary (₹):</label>
+    <input type="number" id="grossSalary">
+
+    <label for="basicSalary">Basic Salary (₹):</label>
+    <input type="number" id="basicSalary">
+
+    <label for="pfOption">PF Contribution:</label>
+    <select id="pfOption">
+      <option value="12">12% of Basic</option>
+      <option value="1800">₹1800 Fixed Monthly</option>
+    </select>
+
+    <label for="npsPercent">NPS Contribution (% of Basic):</label>
+    <input type="number" id="npsPercent" min="2" max="14" value="10">
+
+    <label for="deductions">Other Eligible Deductions (under 80C/80D etc.) in ₹ (Old Regime):</label>
+    <input type="number" id="deductions">
+
+    <button onclick="calculateTax()">Calculate Tax</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateTax() {
+      const gross = parseFloat(document.getElementById('grossSalary').value) || 0;
+      const basic = parseFloat(document.getElementById('basicSalary').value) || 0;
+      const pfOption = document.getElementById('pfOption').value;
+      const npsPercent = parseFloat(document.getElementById('npsPercent').value) || 0;
+      const otherDeduction = parseFloat(document.getElementById('deductions').value) || 0;
+
+      const pfAnnual = pfOption === '12' ? (0.12 * basic * 12) : (1800 * 12);
+      const npsAnnual = (npsPercent / 100) * basic * 12;
+      const stdDeductionOld = 50000;
+      const stdDeductionNew = 75000;
+
+      const totalDeductionsOld = pfAnnual + npsAnnual + otherDeduction + stdDeductionOld;
+      const taxableOld = Math.max(0, gross - totalDeductionsOld);
+      const taxableNew = Math.max(0, gross - npsAnnual - stdDeductionNew);
+
+      const taxOld = computeOldRegimeTax(taxableOld);
+      const taxNew = computeNewRegimeTax(taxableNew);
+
+      document.getElementById('result').innerHTML = `
+        <h3>Results</h3>
+        <p><strong>Taxable Income (Old Regime): ₹</strong>${taxableOld.toFixed(2)}</p>
+        <p><strong>Tax Payable (Old Regime): ₹</strong>${taxOld.toFixed(2)}</p>
+        <p><strong>Taxable Income (New Regime): ₹</strong>${taxableNew.toFixed(2)}</p>
+        <p><strong>Tax Payable (New Regime): ₹</strong>${taxNew.toFixed(2)}</p>
+      `;
+    }
+
+    function computeOldRegimeTax(income) {
+      let tax = 0;
+      if (income <= 250000) return 0;
+      if (income <= 500000) return (income - 250000) * 0.05;
+      if (income <= 1000000) tax = 12500 + (income - 500000) * 0.2;
+      else tax = 112500 + (income - 1000000) * 0.3;
+      return tax;
+    }
+
+    function computeNewRegimeTax(income) {
+      let tax = 0;
+      const slabs = [400000, 800000, 1200000, 1600000, 2000000, 2400000];
+      const rates = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30];
+      let prev = 0;
+      for (let i = 0; i < slabs.length; i++) {
+        if (income > slabs[i]) {
+          tax += (slabs[i] - prev) * rates[i];
+          prev = slabs[i];
+        } else {
+          tax += (income - prev) * rates[i];
+          return tax;
+        }
+      }
+      if (income > 2400000) tax += (income - 2400000) * 0.30;
+      return tax;
+    }
+  </script>
+</body>
+</html>
