@@ -69,32 +69,42 @@
             // Fetch SENSEX data
             axios.get(sensexUrl)
                 .then(response => {
-                    const sensexData = response.data["Time Series (1min)"];
-                    const lastTimestamp = Object.keys(sensexData)[0];
-                    const sensexValue = sensexData[lastTimestamp]["4. close"];
-                    document.getElementById('sensex-value').textContent = sensexValue;
+                    if (response.data["Time Series (1min)"]) {
+                        const sensexData = response.data["Time Series (1min)"];
+                        const lastTimestamp = Object.keys(sensexData)[0];
+                        const sensexValue = sensexData[lastTimestamp]["4. close"];
+                        document.getElementById('sensex-value').textContent = sensexValue;
+                    } else {
+                        document.getElementById('sensex-value').textContent = 'Data not available';
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching SENSEX data:', error);
-                    document.getElementById('sensex-value').textContent = 'Error';
+                    document.getElementById('sensex-value').textContent = 'Error fetching data';
                 });
 
             // Fetch NIFTY data
             axios.get(niftyUrl)
                 .then(response => {
-                    const niftyData = response.data["Time Series (1min)"];
-                    const lastTimestamp = Object.keys(niftyData)[0];
-                    const niftyValue = niftyData[lastTimestamp]["4. close"];
-                    document.getElementById('nifty-value').textContent = niftyValue;
+                    if (response.data["Time Series (1min)"]) {
+                        const niftyData = response.data["Time Series (1min)"];
+                        const lastTimestamp = Object.keys(niftyData)[0];
+                        const niftyValue = niftyData[lastTimestamp]["4. close"];
+                        document.getElementById('nifty-value').textContent = niftyValue;
+                    } else {
+                        document.getElementById('nifty-value').textContent = 'Data not available';
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching NIFTY data:', error);
-                    document.getElementById('nifty-value').textContent = 'Error';
+                    document.getElementById('nifty-value').textContent = 'Error fetching data';
                 });
         }
 
         // Call the fetchStockIndices function when the page loads
-        fetchStockIndices();
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchStockIndices();
+        });
     </script>
 </body>
 
