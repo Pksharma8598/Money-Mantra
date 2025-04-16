@@ -1,0 +1,136 @@
+/* styles.css - Minimalist & Responsive Design for Money Myntra */
+
+/* Reset & base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f9fafa;
+  color: #333;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background: #2d4059;
+  color: #f9fafa;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.left-panel, .middle-panel, .right-panel {
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.left-panel h2, .middle-panel h2, .right-panel h2 {
+  margin-bottom: 1rem;
+  color: #2d4059;
+  font-size: 1.2rem;
+}
+
+.index {
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: #f0f4f8;
+}
+
+.calculator-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.calculator-links a {
+  background: #ea5455;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.calculator-links a:hover {
+  background: #f07b3f;
+}
+
+#news-list li {
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+}
+
+#news-list li a {
+  color: #2d4059;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+#news-list li a:hover {
+  text-decoration: underline;
+  color: #ea5455;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #2d4059;
+  color: #f9fafa;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .calculator-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+  header p {
+    font-size: 0.9rem;
+  }
+  .container {
+    padding: 1rem;
+  }
+}
