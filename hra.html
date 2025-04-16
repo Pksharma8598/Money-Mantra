@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HRA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+    .header {
+      background: #007BFF;
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header a {
+      color: #fff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div><strong>Financial Calculators</strong></div>
+    <div>
+        <a href="./sip.html">SIP Calculator</a>
+        <a href="./emi.html">EMI Calculator</a>
+        <a href="./tax.html">Tax Calculator</a>
+        <a href="./nps.html">NPS Calculator</a>
+        <a href="./hra.html">HRA Calculator</a>
+        <a href="./gratuity.html">Gratuity Calculator</a>
+        <a href="./ppf.html">PPF Calculator</a>
+        <a href="./fd-rd.html">FD/RD Calculator</a>
+        <a href="./future-current.html">Future/Current Value</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>HRA Calculator</h2>
+
+    <label>Basic Salary (₹):</label>
+    <input type="number" id="basicSalary" placeholder="e.g. 500000" />
+
+    <label>HRA Received (₹):</label>
+    <input type="number" id="hraReceived" placeholder="e.g. 200000" />
+
+    <label>Rent Paid (₹):</label>
+    <input type="number" id="rentPaid" placeholder="e.g. 180000" />
+
+    <label>Select City Type:</label>
+    <select id="cityType">
+      <option value="metro">Metro (e.g. Delhi, Mumbai, Chennai, Kolkata)</option>
+      <option value="non-metro">Non-Metro</option>
+    </select>
+
+    <button onclick="calculateHRA()">Calculate HRA Exemption</button>
+
+    <div class="result" id="hraResult"></div>
+  </div>
+
+  <script>
+    function calculateHRA() {
+      const basic = parseFloat(document.getElementById("basicSalary").value);
+      const hraReceived = parseFloat(document.getElementById("hraReceived").value);
+      const rentPaid = parseFloat(document.getElementById("rentPaid").value);
+      const cityType = document.getElementById("cityType").value;
+
+      if (!basic || !hraReceived || !rentPaid) {
+        document.getElementById("hraResult").textContent = "Please enter all values.";
+        return;
+      }
+
+      const rentMinus10Percent = rentPaid - (0.1 * basic);
+      const percentOfSalary = cityType === "metro" ? 0.5 * basic : 0.4 * basic;
+
+      const hraExemption = Math.min(hraReceived, rentMinus10Percent, percentOfSalary);
+      const exempted = hraExemption > 0 ? hraExemption : 0;
+
+      document.getElementById("hraResult").textContent = `HRA Exempted: ₹${exempted.toFixed(2)} | Taxable HRA: ₹${(hraReceived - exempted).toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
